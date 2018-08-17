@@ -17,8 +17,9 @@ class MinecraftServerStatus
      * @param string $host
      * @param number $port
      */
-    public static function query ($host = '127.0.0.1', $port = 25565)
+    public static function query ($host, $port = 25565)
     {
+        logging("INFO", "Starting Minecraft Server query of {$host}:{$port}...");
         // check if the host is in ipv4 format
         $host = filter_var($host, FILTER_VALIDATE_IP) ? $host : gethostbyname(
                 $host);
@@ -35,6 +36,7 @@ class MinecraftServerStatus
         
         $handshakePacket->send($socket);
         
+        logging("DEBUG-1", "Starting data transfer...");
         // high five
         $start = microtime(true);
         $pingPacket->send($socket);
@@ -49,6 +51,7 @@ class MinecraftServerStatus
         $descriptionRaw = isset($data->description) ? $data->description : false;
         $description = $descriptionRaw;
         
+        logging("DEBUG-1", "Data transfer finished.");
         // colorize the description if it is supported
         if (gettype($descriptionRaw) == 'object') {
             $description = '';
@@ -69,7 +72,8 @@ class MinecraftServerStatus
             }
         }
         
-        return array(
+        logging("INFO", "Minecraft Server query of {$host}:{$port} finished.");
+        $return = array(
                 'hostname' => $host,
                 'port' => $port,
                 'ping' => $ping,
@@ -77,11 +81,13 @@ class MinecraftServerStatus
                 'protocol' => isset($data->version->protocol) ? $data->version->protocol : false,
                 'players' => isset($data->players->online) ? $data->players->online : false,
                 'max_players' => isset($data->players->max) ? $data->players->max : false,
-                'description' => $description,
-                'description_raw' => $descriptionRaw,
+                'description' => htmlspecialchars($description),
+                'description_raw' => htmlspecialchars($descriptionRaw),
                 'favicon' => isset($data->favicon) ? $data->favicon : false,
                 'modinfo' => isset($data->modinfo) ? $data->modinfo : false
         );
+        logging("DEBUG-3", var_dump($return));
+        return $return;
     }
 
     private static function readVarInt ($socket)

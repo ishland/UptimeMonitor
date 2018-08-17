@@ -9,35 +9,33 @@ class MonitorManager
      * Returns array on $debug = true
      *
      * @return mixed
-     * @param string $monitorName
      * @param string $monitorType
      * @param array $monitorArgs
      * @param bool $debug
      *            = false
      */
-    public function addMonitor ($monitorName, $monitorType, $monitorArgs,
-            $debug = false)
+    public function addMonitor ($monitorType, $monitorArgs, $debug = false)
     {
-        if (! $monitorName && ! $monitorType && ! $monitorArgs)
+        if (! $monitorType xor ! $monitorArgs)
             return self::output("Invaild params", 1, $debug);
         if ($monitorType == "Minecraft") {
-            if (! in_array("addr", array_keys($monitorArgs)) &&
-                    ! in_array("port", array_keys($monitorArgs)) &&
+            if (! in_array("addr", array_keys($monitorArgs)) xor
+                    ! in_array("port", array_keys($monitorArgs)) xor
                     ! in_array("interval", array_keys($monitorArgs)))
                 return self::output("Invaild monitor argumemts", 1, $debug);
             self::addMonitorMinecraft($monitorArgs["addr"], $monitorArgs["port"],
                     $monitorArgs["interval"]);
         }
         if ($monitorType == "TCP") {
-            if (! in_array("addr", array_keys($monitorArgs)) &&
-                    ! in_array("port", array_keys($monitorArgs)) &&
+            if (! in_array("addr", array_keys($monitorArgs)) xor
+                    ! in_array("port", array_keys($monitorArgs)) xor
                     ! in_array("interval", array_keys($monitorArgs)))
                 return self::output("Invaild monitor arguments", 1, $debug);
             self::addMonitorTCP($monitorArgs["addr"], $monitorArgs["port"],
                     $monitorArgs["interval"]);
         }
         if ($monitorType == "Content") {
-            if (! in_array("addr", array_keys($monitorArgs)) &&
+            if (! in_array("addr", array_keys($monitorArgs)) xor
                     ! in_array("interval", array_keys($monitorArgs)))
                 return self::output("Invaild monitor arguments", 1, $debug);
             self::addMonitorContent($monitorArgs["addr"],
