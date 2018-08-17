@@ -45,6 +45,40 @@ class MonitorManager
         }
     }
 
+    /**
+     * Remove a monitor.
+     * Returns bool on $debug = false
+     * Returns array on $debug = true
+     *
+     * @return mixed
+     * @param int $id
+     * @param bool $debug
+     *            = false
+     */
+    public function removeMonitor ($id, $debug = false)
+    {
+        if (! file_exists(getcwd() . "/MonitorList/" . $id . ".monitor"))
+            return self::output("Invaild ID", 1, $debug);
+        file_put_contents(getcwd() . "/MonitorList/" . $id . ".monitor", "");
+    }
+
+    /**
+     * Get a information about a monitor.
+     * Returns bool on $debug = false
+     * Returns array on $debug = true
+     *
+     * @return mixed
+     * @param int $id
+     * @param bool $debug
+     *            = false
+     */
+    public function infoMonitor ($id, $debug = false)
+    {
+        if (! file_exists(getcwd() . "/MonitorList/" . $id . ".monitor"))
+            return self::output("Invaild ID", 1, $debug);
+        return file_get_contents(getcwd() . "/MonitorList/" . $id . ".monitor");
+    }
+
     protected function addMonitorMinecraft ($addr, $port, $interval)
     {
         file_put_contents(
