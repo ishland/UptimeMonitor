@@ -22,13 +22,30 @@ class MonitorManager
             return self::output("Invaild params", 1, $debug);
         if ($monitorType == "Minecraft") {
             if (! in_array("addr", array_keys($monitorArgs)) &&
-                    ! in_array("port", array_keys($monitorArgs)))
+                    ! in_array("port", array_keys($monitorArgs)) &&
+                    ! in_array("interval", array_keys($monitorArgs)))
                 return self::output("Invaild monitor argumemts", 1, $debug);
-            self::addMonitorMinecraft($monitorArgs["addr"], $monitorArgs["port"]);
+            self::addMonitorMinecraft($monitorArgs["addr"], $monitorArgs["port"],
+                    $monitorArgs["interval"]);
+        }
+        if ($monitorType == "TCP") {
+            if (! in_array("addr", array_keys($monitorArgs)) &&
+                    ! in_array("port", array_keys($monitorArgs)) &&
+                    ! in_array("interval", array_keys($monitorArgs)))
+                return self::output("Invaild monitor arguments", 1, $debug);
+            self::addMonitorTCP($monitorArgs["addr"], $monitorArgs["port"],
+                    $monitorArgs["interval"]);
+        }
+        if ($monitorType == "Content") {
+            if (! in_array("addr", array_keys($monitorArgs)) &&
+                    ! in_array("interval", array_keys($monitorArgs)))
+                return self::output("Invaild monitor arguments", 1, $debug);
+            self::addMonitorContent($monitorArgs["addr"],
+                    $monitorArgs["interval"]);
         }
     }
 
-    protected function addMonitorMinecraft ($addr, $port)
+    protected function addMonitorMinecraft ($addr, $port, $interval)
     {
         file_put_contents(
                 getcwd() . "/MonitorList/" . self::getNumber() . ".monitor",
@@ -36,7 +53,39 @@ class MonitorManager
                         array(
                                 "type" => "Minecraft",
                                 "addr" => $addr,
-                                "port" => $port
+                                "port" => $port,
+                                "interval" => $interval,
+                                "id" => self::getNumber(),
+                                "data" => Array()
+                        )));
+    }
+
+    protected function addMonitorTCP ($addr, $port, $interval)
+    {
+        file_put_contents(
+                getcwd() . "/MonitorList/" . self::getNumber() . ".monitor",
+                json_encode(
+                        array(
+                                "type" => "TCP",
+                                "addr" => $addr,
+                                "port" => $port,
+                                "interval" => $interval,
+                                "id" => self::getNumber(),
+                                "data" => Array()
+                        )));
+    }
+
+    protected function addMonitorContent ($addr, $interval)
+    {
+        file_put_contents(
+                getcwd() . "/MonitorList/" . self::getNumber() . ".monitor",
+                json_encode(
+                        array(
+                                "type" => "Content",
+                                "addr" => $addr,
+                                "interval" => $interval,
+                                "id" => self::getNumber(),
+                                "data" => Array()
                         )));
     }
 
