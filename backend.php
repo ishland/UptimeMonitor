@@ -141,6 +141,55 @@ $main->onMessage = function ($connection, $data)
         $connnection->close();
         return;
     }
+    if ($data["action"] == "remove") {
+        if (! in_array("id", array_keys($data["args"]))) {
+            $connection->send(
+                    json_encode(
+                            Array(
+                                    "version" => PROTOCOL_VERSION,
+                                    "status" => 2,
+                                    "msg" => "Invaild arguments"
+                            )));
+            $connection->close();
+            return;
+        }
+        if (! json_decode(
+                @file_get_contents(
+                        getcwd() . "/MonitorList/" . $data["args"]["id"] .
+                        ".monitor"), true)) {
+            $connection->send(
+                    json_encode(
+                            Array(
+                                    "version" => PROTOCOL_VERSION,
+                                    "status" => 2,
+                                    "msg" => "Invaild id"
+                            )));
+            $connection->close();
+            return;
+        }
+        $class = new MonitorManager();
+        $result = $class->removeMonitor($data["args"]["id"], false);
+        if ($result) {
+            $connection->send(
+                    json_encode(
+                            Array(
+                                    "version" => PROTOCOL_VERSION,
+                                    "status" => 0,
+                                    "msg" => "Success"
+                            )));
+            $connection->close();
+            return;
+        }
+        $connection->send(
+                json_encode(
+                        Array(
+                                "version" => PROTOCOL_VERSION,
+                                "status" => 2,
+                                "msg" => "Not handled"
+                        )));
+        $connection->close();
+        return;
+    }
 };
 
 $monitor = new Worker("unix://" . getcwd() . "/monitor_socket");

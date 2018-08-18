@@ -55,9 +55,12 @@ class MonitorManager
      */
     public function removeMonitor ($id, $debug = false)
     {
-        if (! file_exists(getcwd() . "/MonitorList/" . $id . ".monitor"))
+        if (! json_decode(
+                @file_get_contents(
+                        getcwd() . "/MonitorList/" . $id . ".monitor"), true))
             return self::output("Invaild ID", 1, $debug);
         file_put_contents(getcwd() . "/MonitorList/" . $id . ".monitor", "");
+        return true;
     }
 
     /**
@@ -72,7 +75,9 @@ class MonitorManager
      */
     public function infoMonitor ($id, $debug = false)
     {
-        if (! file_exists(getcwd() . "/MonitorList/" . $id . ".monitor"))
+        if (! json_decode(
+                @file_get_contents(
+                        getcwd() . "/MonitorList/" . $id . ".monitor"), true))
             return self::output("Invaild ID", 1, $debug);
         return file_get_contents(getcwd() . "/MonitorList/" . $id . ".monitor");
     }
