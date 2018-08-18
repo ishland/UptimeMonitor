@@ -20,57 +20,56 @@ class MinecraftServerStatus
     public static function query ($host, $port = 25565)
     {
         logging("INFO", "Starting Minecraft Server query of {$host}:{$port}...");
+        $start = microtime(true);
         // check if the host is in ipv4 format
         $host = filter_var($host, FILTER_VALIDATE_IP) ? $host : gethostbyname(
                 $host);
         
         $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-        if (! socket_connect($socket, $host, $port)) {
-            return false;
-        }
-        
-        // create the handshake and ping packet
-        $handshakePacket = new MinecraftServerStatusHandshakePacket($host, $port,
-                107, 1);
-        $pingPacket = new MinecraftServerStatusPingPacket();
-        
-        $handshakePacket->send($socket);
-        
-        logging("DEBUG-1", "Starting data transfer...");
-        // high five
-        $start = microtime(true);
-        $pingPacket->send($socket);
-        $length = self::readVarInt($socket);
-        $ping = round((microtime(true) - $start) * 1000);
-        
-        // read the requested data
-        $data = socket_read($socket, $length, PHP_NORMAL_READ);
-        $data = strstr($data, '{');
-        $data = json_decode($data);
-        
-        $descriptionRaw = isset($data->description) ? $data->description : false;
-        $description = $descriptionRaw;
-        
-        logging("DEBUG-1", "Data transfer finished.");
-        // colorize the description if it is supported
-        if (gettype($descriptionRaw) == 'object') {
-            $description = '';
+        if (socket_connect($socket, $host, $port)) {
             
-            if (isset($descriptionRaw->text)) {
-                $color = isset($descriptionRaw->color) ? $descriptionRaw->color : '';
-                $description = '<font color="' . $color . '">' .
-                        $descriptionRaw->text . '</font>';
-            }
+            // create the handshake and ping packet
+            $handshakePacket = new MinecraftServerStatusHandshakePacket($host,
+                    $port, 107, 1);
+            $pingPacket = new MinecraftServerStatusPingPacket();
             
-            if (isset($descriptionRaw->extra)) {
-                foreach ($descriptionRaw->extra as $item) {
-                    $description .= isset($item->bold) && $item->bold ? '<b>' : '';
-                    $description .= isset($item->color) ? '<font color="' .
-                            $item->color . '">' . $item->text . '</font>' : '';
-                    $description .= isset($item->bold) && $item->bold ? '</b>' : '';
+            $handshakePacket->send($socket);
+            
+            logging("DEBUG-1", "Starting data transfer...");
+            // high five
+            $pingPacket->send($socket);
+            $length = self::readVarInt($socket);
+            
+            // read the requested data
+            $data = socket_read($socket, $length, PHP_NORMAL_READ);
+            $data = strstr($data, '{');
+            $data = json_decode($data);
+            
+            $descriptionRaw = isset($data->description) ? $data->description : false;
+            $description = $descriptionRaw;
+            
+            logging("DEBUG-1", "Data transfer finished.");
+            // colorize the description if it is supported
+            if (gettype($descriptionRaw) == 'object') {
+                $description = '';
+                
+                if (isset($descriptionRaw->text)) {
+                    $color = isset($descriptionRaw->color) ? $descriptionRaw->color : '';
+                    $description = '<font color="' . $color . '">' .
+                            $descriptionRaw->text . '</font>';
+                }
+                
+                if (isset($descriptionRaw->extra)) {
+                    foreach ($descriptionRaw->extra as $item) {
+                        $description .= isset($item->bold) && $item->bold ? '<b>' : '';
+                        $description .= isset($item->color) ? '<font color="' .
+                                $item->color . '">' . $item->text . '</font>' : '';
+                        $description .= isset($item->bold) && $item->bold ? '</b>' : '';
+                    }
                 }
             }
         }
+        $ping = round((microtime(true) - $start) * 1000);
         
         logging("INFO", "Minecraft Server query of {$host}:{$port} finished.");
         $return = array(
