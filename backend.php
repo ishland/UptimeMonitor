@@ -190,6 +190,67 @@ $main->onMessage = function ($connection, $data)
         $connection->close();
         return;
     }
+    if ($data["action"] == "get") {
+        if (! in_array("id", array_keys($data["args"]))) {
+            $connection->send(
+                    json_encode(
+                            Array(
+                                    "version" => PROTOCOL_VERSION,
+                                    "status" => 2,
+                                    "msg" => "Invaild arguments"
+                            )));
+            $connection->close();
+            return;
+        }
+        if (! json_decode(
+                @file_get_contents(
+                        getcwd() . "/MonitorList/" . $data["args"]["id"] .
+                        ".monitor"), true)) {
+            $connection->send(
+                    json_encode(
+                            Array(
+                                    "version" => PROTOCOL_VERSION,
+                                    "status" => 2,
+                                    "msg" => "Invaild id"
+                            )));
+            $connection->close();
+            return;
+        }
+        $class = new MonitorManager();
+        $origin = $class->infoMonitor($data["args"]["id"], true);
+        $G2 = Array();
+        if ($result) {
+            foreach ($origin["data"] as $key => $value) {
+                $G2[$key]["time"] == $key;
+                $G2[$key]["success"] == $value["success"];
+                $G2[$key]["players"] == $value["players"];
+                $G2[$key]["ping"] == $value["ping"];
+            }
+            $connection->send(
+                    json_encode(
+                            Array(
+                                    "version" => PROTOCOL_VERSION,
+                                    "status" => 0,
+                                    "msg" => "Success",
+                                    "data" => Array(
+                                            "version" => 0,
+                                            "origin" => $origin,
+                                            "G2" => $G2
+                                    )
+                            )));
+            $connection->close();
+            return;
+        }
+        $connection->send(
+                json_encode(
+                        Array(
+                                "version" => PROTOCOL_VERSION,
+                                "status" => 2,
+                                "msg" => "Not handled"
+                        )));
+        $connection->close();
+        return;
+    }
 };
 
 $monitor = new Worker("unix://" . getcwd() . "/monitor_socket");

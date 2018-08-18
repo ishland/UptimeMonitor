@@ -77,6 +77,7 @@ class MinecraftServerStatus
                 'hostname' => $host,
                 'port' => $port,
                 'ping' => $ping,
+                'success' => isset($data->version->name) ? true : false,
                 'version' => isset($data->version->name) ? $data->version->name : false,
                 'protocol' => isset($data->version->protocol) ? $data->version->protocol : false,
                 'players' => isset($data->players->online) ? $data->players->online : false,

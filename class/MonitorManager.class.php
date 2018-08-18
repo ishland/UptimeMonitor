@@ -79,7 +79,9 @@ class MonitorManager
                 @file_get_contents(
                         getcwd() . "/MonitorList/" . $id . ".monitor"), true))
             return self::output("Invaild ID", 1, $debug);
-        return file_get_contents(getcwd() . "/MonitorList/" . $id . ".monitor");
+        return json_decode(
+                file_get_contents(getcwd() . "/MonitorList/" . $id . ".monitor"),
+                true);
     }
 
     protected function addMonitorMinecraft ($addr, $port, $interval)
