@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>UptimeMonitor - Minecraft</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="../css/style.css" />
+    <script src="../js/main.js"></script>
+    <script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.g2-3.2.7-beta.4/dist/g2.min.js"></script>
+    <script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.data-set-0.8.9/dist/data-set.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/mdui/0.4.1/css/mdui.min.css">
+    <script src="https://cdnjs.loli.net/ajax/libs/mdui/0.4.1/js/mdui.min.js"></script>
+</head>
+
+<body>
+    <div class="page-top mdui-shadow-1"></div>
+    <div class="page mdui-shadow-2">
+        <div class="top"></div>
+        <div class="text">
+            <h1 class="mdui-text-center">UptimeMonitor</h1>
+            <div class="mdui-tab mdui-tab-full-width" mdui-tab>
+                <a href="#tab1" class="mdui-ripple">统计图</a>
+                <a href="#tab2" class="mdui-ripple">表格</a>
+            </div>
+            <div id="tab1" class="mdui-p-a-2 mdui-typo">
+                <center>
+                    <h2>延迟统计</h2>
+                    <div id="Ping"></div>
+                    <h2>在线玩家统计</h2>
+                    <div id="Player"></div>
+                </center>
+            </div>
+            <div id="tab2" class="mdui-p-a-2">
+                <center>
+                    <div class="mdui-table-fluid">
+                        <div class="mdui-table-fluid">
+                            <table class="mdui-table mdui-table-hoverable">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>延迟</th>
+                                        <th>在线玩家</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </center>
+            </div>
+        </div>
+    </div>
+    <script>
+        /*
+        
+        var id = getQueryVariable("id");
+        var url = "" + id;
+        var json_str = ajaxGet(url);
+        var json_obj = json_str.parse(json_str);
+        var data_ping = json_obj.data.G2.ping;
+        var data_player = json_obj.data.G2.player;
+        
+        */
+        //渲染延迟统计图
+        var data = [
+            { time: "1", Ping: 21 },
+            { time: "2", Ping: 6 },
+            { time: "3", Ping: 14 },
+            { time: "4", Ping: 2 },
+            { time: "5", Ping: 6 },
+            { time: "6", Ping: 4 },
+            { time: "7", Ping: 2 }
+        ];//传入数组，格式为{time:"time",ping:ping}
+        var ds = new DataSet();
+        var dv = ds.createView().source(data);
+        // fold 方式完成了行列转换，如果不想使用 DataSet 直接手工转换数据即可
+        dv.transform({
+            type: 'fold',
+            fields: ['Ping'], // 展开字段集
+            key: 'city', // key字段
+            value: 'value' // value字段
+        });
+        var chart = new G2.Chart({
+            container: document.getElementById('Ping'),
+            forceFit: true,
+            width: 750,
+            height: 500
+        });
+        chart.source(dv, {
+            month: {
+                range: [0, 1]
+            }
+        });
+        chart.tooltip({
+            crosshairs: {
+                type: 'line'
+            }
+        });
+        chart.axis('value', {
+            label: {
+                formatter: function formatter(val) {
+                    return val + " ms";
+                }
+            }
+        });
+        chart.line().position('time*value').color('city').shape('smooth');
+        chart.point().position('time*value').color('city').size(4).shape('circle').style({
+            stroke: '#fff',
+            lineWidth: 1
+        });
+        chart.render();
+
+        //渲染玩家统计图
+        var data = [
+            { time: "1", player: 21 },
+            { time: "2", player: 6 },
+            { time: "3", player: 14 },
+            { time: "4", player: 2 },
+            { time: "5", player: 6 },
+            { time: "6", player: 4 },
+            { time: "7", player: 2 }
+        ];//传入数组，格式为{time:"time",player:plater}
+        var ds = new DataSet();
+        var dv = ds.createView().source(data);
+        // fold 方式完成了行列转换，如果不想使用 DataSet 直接手工转换数据即可
+        dv.transform({
+            type: 'fold',
+            fields: ['player'], // 展开字段集
+            key: 'city', // key字段
+            value: 'value' // value字段
+        });
+        var chart = new G2.Chart({
+            container: document.getElementById('Player'),
+            forceFit: true,
+            width: 750,
+            height: 500
+        });
+        chart.source(dv, {
+            month: {
+                range: [0, 1]
+            }
+        });
+        chart.tooltip({
+            crosshairs: {
+                type: 'line'
+            }
+        });
+        chart.axis('value', {
+            label: {
+                formatter: function formatter(val) {
+                    return val + " 人";
+                }
+            }
+        });
+        chart.line().position('time*value').color('city').shape('smooth');
+        chart.point().position('time*value').color('city').size(4).shape('circle').style({
+            stroke: '#fff',
+            lineWidth: 1
+        });
+        chart.render();
+    </script>
+</body>
+
+</html>

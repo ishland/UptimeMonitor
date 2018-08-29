@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>UptimeMonitor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="./css/style.css" />
+    <script src="./js/main.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/mdui/0.4.1/css/mdui.min.css">
+    <script src="https://cdnjs.loli.net/ajax/libs/mdui/0.4.1/js/mdui.min.js"></script>
+</head>
+
+<body>
+        <div class="page-top mdui-shadow-1"></div>
+        <div class="page mdui-shadow-2">
+            <div class="top"></div>
+            <div class="text">
+                <h1 class="mdui-text-center">UptimeMonitor</h1>
+                <div class="mdui-tab mdui-tab-full-width" mdui-tab>
+                    <a href="#tab1" class="mdui-ripple">列表</a>
+                    <a href="#tab2" class="mdui-ripple">添加</a>
+                    <a href="#tab3" class="mdui-ripple">删除</a>
+                </div>
+                <div id="tab1" class="mdui-p-a-2">
+                    <div class="mdui-table-fluid">
+                        <table class="mdui-table mdui-table-hoverable">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>名称</th>
+                                    <th>类型</th>
+                                    <th>状态</th>
+                                </tr>
+                            </thead>
+                            <tbody class="mdui-typo">
+    
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div id="tab2" class="mdui-p-a-2">
+                    <div class="mdui-textfield mdui-textfield-floating-label">
+                        <input id="name" class="mdui-textfield-input" type="text" placeholder="监控名称" />
+                    </div>
+                    <div class="mdui-textfield mdui-textfield-floating-label">
+                        <input id="email" class="mdui-textfield-input" type="email" placeholder="邮箱" />
+                    </div>
+                    <div class="mdui-typo">
+                        <select class="mdui-select" id="type" mdui-select>
+                            <option value="0">请选择监控的类型</option>
+                            <option value="1">Minecraft</option>
+                            <option value="2">TCP</option>
+                            <option value="3">Content</option>
+                        </select>
+                    </div>
+                    <div class="mdui-textfield mdui-textfield-floating-label">
+                        <input id="ip" class="mdui-textfield-input" type="text" placeholder="网址或IP" />
+                    </div>
+                    <div class="mdui-textfield mdui-textfield-floating-label">
+                        <input id="port" class="mdui-textfield-input" type="text" placeholder="端口" />
+                    </div>
+                    <div class="mdui-textfield mdui-textfield-floating-label">
+                        <input id="timeout" class="mdui-textfield-input" type="text" placeholder="超时时间" />
+                    </div>
+                    <div class="mdui-textfield mdui-textfield-floating-label">
+                        <input id="time" class="mdui-textfield-input" type="text" placeholder="监控频率" />
+                    </div>
+                    <center>
+                        <button onclick="" class="mdui-btn mdui-btn-raised mdui-ripple">提交</button>
+                    </center>
+                </div>
+                <div id="tab3" class="mdui-p-a-2">
+                    <div class="mdui-textfield mdui-textfield-floating-label">
+                        <input id="id" class="mdui-textfield-input" type="text" placeholder="您的监控ID" />
+                    </div>
+                    <center>
+                        <button onclick="" class="mdui-btn mdui-btn-raised mdui-ripple">提交</button>
+                    </center>
+                </div>
+            </div>
+        </div>
+</body>
+
+</html>
