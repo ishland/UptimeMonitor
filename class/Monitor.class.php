@@ -71,7 +71,8 @@ class Monitor
 
     protected function monitoringTCP ($content)
     {
-        $sock = fsockopen($hostname);
+        $sock = fsockopen($content["addr"], $content["port"], $errno, $errstr,
+                10);
     }
 
     protected function monitoringContent ($content)
