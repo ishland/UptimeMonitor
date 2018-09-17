@@ -65,6 +65,11 @@ class Monitor
                     "status" => 1,
                     "result" => $result
             );
+        } else {
+            $content["data"][] = Array(
+                    "status" => 0,
+                    "result" => $result
+            );
         }
         self::updateData($content);
     }
@@ -73,6 +78,7 @@ class Monitor
     {
         $sock = fsockopen($content["addr"], $content["port"], $errno, $errstr,
                 10);
+        if (! $sock) {}
     }
 
     protected function monitoringContent ($content)
