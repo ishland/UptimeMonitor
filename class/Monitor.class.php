@@ -17,6 +17,17 @@ class Monitor
         }
         if (! $target)
             return self::output("Invaild monitor ID", 1, $debug);
+        switch ($target["type"]) {
+            case "Minecraft":
+                self::monitoringMinecraft($target);
+                break;
+            case "TCP":
+                self::monitoringTCP($target);
+                break;
+            case "Content":
+                self::monitoringContent($target);
+                break;
+        }
     }
 
     protected function getMonitors ()
@@ -58,10 +69,12 @@ class Monitor
         self::updateData($content);
     }
 
-    protected function monitoringTCP ()
-    {}
+    protected function monitoringTCP ($content)
+    {
+        $sock = fsockopen($hostname);
+    }
 
-    protected function monitoringContent ()
+    protected function monitoringContent ($content)
     {}
 
     protected function updateData ($content)
