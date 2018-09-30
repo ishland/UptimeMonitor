@@ -11,7 +11,7 @@ class Monitor
         self::getMonitors();
         foreach ($this->monitors as $value) {
             if ($value["id"] == $id) {
-                $target = $vaule;
+                $target = $value;
                 break;
             }
         }
@@ -38,7 +38,6 @@ class Monitor
         $dir = opendir(getcwd() . "/MonitorList");
         while (($file = readdir($dir)) !== false) {
             if (($file != '.') && ($file != '..')) {
-                $name = explode(".", $file);
                 if (! is_dir(getcwd() . "/MonitorList/" . $file)) {
                     $content = json_decode(
                             file_get_contents(
@@ -78,7 +77,9 @@ class Monitor
     {
         $sock = fsockopen($content["addr"], $content["port"], $errno, $errstr,
                 10);
-        if (! $sock) {}
+        if (! $sock) {
+            // To do
+        }
     }
 
     protected function monitoringContent ($content)
