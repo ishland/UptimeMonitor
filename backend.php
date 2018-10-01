@@ -27,7 +27,7 @@ $main->onMessage = function ($connection, $data)
                                 "msg" => "Protocol version wrong! Please use " .
                                 PROTOCOL_VERSION
                         )));
-        $connnection->close();
+        $connection->close();
         return;
     }
 
@@ -54,7 +54,7 @@ $main->onMessage = function ($connection, $data)
                                     "status" => 2,
                                     "msg" => "Invaild arguments"
                             )));
-            $connnection->close();
+            $connection->close();
             return;
         }
         if ($data["args"]["type"] !== "Minecraft" xor
@@ -67,7 +67,7 @@ $main->onMessage = function ($connection, $data)
                                     "status" => 2,
                                     "msg" => "Invaild monitor type"
                             )));
-            $connnection->close();
+            $connection->close();
             return;
         }
         if (! $data["args"]["args"]) {
@@ -78,7 +78,7 @@ $main->onMessage = function ($connection, $data)
                                     "status" => 2,
                                     "msg" => "Invaild arguments"
                             )));
-            $connnection->close();
+            $connection->close();
             return;
         }
         if (! $data["args"]["args"]["addr"] xor
@@ -90,7 +90,7 @@ $main->onMessage = function ($connection, $data)
                                     "status" => 2,
                                     "msg" => "Invaild arguments"
                             )));
-            $connnection->close();
+            $connection->close();
             return;
         }
         $class = new MonitorManager();
@@ -140,7 +140,7 @@ $main->onMessage = function ($connection, $data)
                                 "status" => 2,
                                 "msg" => "Not handled"
                         )));
-        $connnection->close();
+        $connection->close();
         return;
     }
     if ($data["action"] == "remove") {
@@ -221,7 +221,7 @@ $main->onMessage = function ($connection, $data)
         $class = new MonitorManager();
         $origin = $class->infoMonitor($data["args"]["id"], true);
         $G2 = Array();
-        if ($result) {
+        if ($origin && $origin["type"] == "Minecraft") {
             foreach ($origin["data"] as $key => $value) {
                 $G2[$key]["time"] == $key;
                 $G2[$key]["success"] == $value["success"];
