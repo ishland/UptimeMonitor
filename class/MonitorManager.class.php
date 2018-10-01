@@ -84,6 +84,11 @@ class MonitorManager
                 true);
     }
 
+    public function listMonitor ($debug = false)
+    {
+        return self::getList();
+    }
+
     protected function addMonitorMinecraft ($addr, $port, $interval)
     {
         file_put_contents(
@@ -126,6 +131,31 @@ class MonitorManager
                                 "id" => self::getNumber(),
                                 "data" => Array()
                         )));
+    }
+
+    protected function updateList ()
+    {
+        if (! file_exists(getcwd() . "/monitors.json"))
+            file_put_contents(getcwd() . "/monitors.json", json_encode(Array()));
+        $monitors = Array();
+        @mkdir(getcwd() . "/MonitorList");
+        $dir = opendir(getcwd() . "/MonitorList");
+        while (($file = readdir($dir)) !== false) {
+            if (($file != '.') && ($file != '..')) {
+                if (! is_dir(getcwd() . "/MonitorList/" . $file)) {
+                    $monitors[] = $file;
+                }
+            }
+        }
+        closedir($dir);
+        file_put_contents(getcwd() . "/monitors.json", json_encode($monitors));
+    }
+
+    protected function getList ()
+    {
+        if (! file_exists(getcwd() . "/monitors.json"))
+            self::updateList();
+        return json_decode(file_get_contents(getcwd() . "/monitors.json"), true);
     }
 
     protected function getNumber ()
