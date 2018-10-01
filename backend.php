@@ -4,6 +4,7 @@ require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/class/PortChecker.class.php';
 require_once __DIR__ . '/class/MinecraftServerStatus.class.php';
 require_once __DIR__ . '/class/MonitorManager.class.php';
+require_once __DIR__ . '/class/Monitor.class.php';
 use Workerman\Worker;
 use Workerman\Connection\AsyncTcpConnection;
 
