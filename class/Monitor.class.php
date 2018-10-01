@@ -94,7 +94,17 @@ class Monitor
     }
 
     protected function monitoringContent ($content)
-    {}
+    {
+        if (file_get_contents($content["addr"])) {
+            $content["data"][] = Array(
+                    "status" => 0
+            );
+        } else {
+            $content["data"][] = Array(
+                    "status" => 1
+            );
+        }
+    }
 
     protected function updateData ($content)
     {
