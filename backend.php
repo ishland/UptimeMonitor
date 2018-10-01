@@ -5,6 +5,7 @@ require_once __DIR__ . '/class/PortChecker.class.php';
 require_once __DIR__ . '/class/MinecraftServerStatus.class.php';
 require_once __DIR__ . '/class/MonitorManager.class.php';
 use Workerman\Worker;
+use Workerman\Connection\AsyncTcpConnection;
 
 define("PROTOCOL_VERSION", 0);
 
@@ -28,7 +29,7 @@ $main->onMessage = function ($connection, $data)
         $connnection->close();
         return;
     }
-    
+
     if ($data["action"] !== "add" xor $data["action"] !== "remove" xor
             $data["action"] !== "get") {
         $connection->send(
@@ -41,7 +42,7 @@ $main->onMessage = function ($connection, $data)
         $connection->close();
         return;
     }
-    
+
     if ($data["action"] == "add") {
         if (! in_array("type", $data["args"]) xor
                 ! in_array("args", $data["args"])) {
@@ -251,11 +252,44 @@ $main->onMessage = function ($connection, $data)
         $connection->close();
         return;
     }
+    if ($data["action"] == "list") {
+        $class = new MonitorManager();
+        $connection->send(
+                json_encode(
+                        Array(
+                                "version" => PROTOCOL_VERSION,
+                                "status" => 0,
+                                "msg" => "Success",
+                                "data" => $class->listMonitor()
+                        )));
+        $connection->close();
+        return;
+
+        $connection->send(
+                json_encode(
+                        Array(
+                                "version" => PROTOCOL_VERSION,
+                                "status" => 2,
+                                "msg" => "Not handled"
+                        )));
+        $connection->close();
+        return;
+    }
 };
 
 $monitor = new Worker("unix://" . getcwd() . "/monitor_socket");
 $monitor->onWorkerStart = function ($worker)
-{};
+{
+    $worker->mainClass = new Monitor();
+};
+
+$timer = new Worker("unix://" . getcwd() . "/timer_socket");
+$timer->onWorkerStart = function ($worker)
+{
+    $worker->mainClass = new Monitor();
+    $worker->connectionMonitor = new AsyncTcpConnection(
+            "unix://" . getcwd() . "/monitor_socket");
+};
 
 Worker::runAll();
 
