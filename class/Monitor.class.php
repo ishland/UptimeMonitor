@@ -78,7 +78,18 @@ class Monitor
         $sock = fsockopen($content["addr"], $content["port"], $errno, $errstr,
                 10);
         if (! $sock) {
-            // To do
+            $content["data"][] = Array(
+                    "status" => 1,
+                    "result" => Array(
+                            "errno" => $errno,
+                            "errstr" => $errstr
+                    )
+            );
+        } else {
+            $content["data"][] = Array(
+                    "status" => 0,
+                    "result" => Array()
+            );
         }
     }
 
