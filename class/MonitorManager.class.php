@@ -89,6 +89,24 @@ class MonitorManager
         return self::getList();
     }
 
+    public function updateList ()
+    {
+        if (! file_exists(getcwd() . "/monitors.json"))
+            file_put_contents(getcwd() . "/monitors.json", json_encode(Array()));
+        $monitors = Array();
+        @mkdir(getcwd() . "/MonitorList");
+        $dir = opendir(getcwd() . "/MonitorList");
+        while (($file = readdir($dir)) !== false) {
+            if (($file != '.') && ($file != '..')) {
+                if (! is_dir(getcwd() . "/MonitorList/" . $file)) {
+                    $monitors[] = $file;
+                }
+            }
+        }
+        closedir($dir);
+        file_put_contents(getcwd() . "/monitors.json", json_encode($monitors));
+    }
+
     protected function addMonitorMinecraft ($addr, $port, $interval)
     {
         file_put_contents(
@@ -133,24 +151,6 @@ class MonitorManager
                         )));
     }
 
-    protected function updateList ()
-    {
-        if (! file_exists(getcwd() . "/monitors.json"))
-            file_put_contents(getcwd() . "/monitors.json", json_encode(Array()));
-        $monitors = Array();
-        @mkdir(getcwd() . "/MonitorList");
-        $dir = opendir(getcwd() . "/MonitorList");
-        while (($file = readdir($dir)) !== false) {
-            if (($file != '.') && ($file != '..')) {
-                if (! is_dir(getcwd() . "/MonitorList/" . $file)) {
-                    $monitors[] = $file;
-                }
-            }
-        }
-        closedir($dir);
-        file_put_contents(getcwd() . "/monitors.json", json_encode($monitors));
-    }
-
     protected function getList ()
     {
         if (! file_exists(getcwd() . "/monitors.json"))
@@ -165,7 +165,6 @@ class MonitorManager
         $dir = opendir(getcwd() . "/MonitorList");
         while (($file = readdir($dir)) !== false) {
             if (($file != '.') && ($file != '..')) {
-                $name = explode(".", $file);
                 if (! is_dir(getcwd() . "/MonitorList/" . $file)) {
                     $i ++;
                 }

@@ -282,12 +282,25 @@ $monitor = new Worker("unix://" . getcwd() . "/monitor_socket");
 $monitor->onWorkerStart = function ($worker)
 {
     $worker->mainClass = new Monitor();
+    $worker->managerClass = new MonitorManager();
+
+    // Refreshing data
+    $worker->managerClass->updateList();
+};
+$monitor->onMessage = function ($connection, $data)
+{
+    if (! json_decode($data))
+        return;
+    $data = json_decode($data, true);
+    if ($data["action"] == "refresh")
+        $connection->worker->managerClass->updateList();
 };
 
 $timer = new Worker("unix://" . getcwd() . "/timer_socket");
 $timer->onWorkerStart = function ($worker)
 {
     $worker->mainClass = new Monitor();
+    $worker->managerClass = new MonitorManager();
     $worker->connectionMonitor = new AsyncTcpConnection(
             "unix://" . getcwd() . "/monitor_socket");
 };
